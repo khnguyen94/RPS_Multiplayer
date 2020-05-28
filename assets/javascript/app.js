@@ -30,7 +30,7 @@ let playerTwoData = null;
 
 // Create HTML Dom references
 let loginBtn = $("#login-btn");
-let usernameText = $("username-text");
+let usernameText = $("#username-text");
 
 // Create a function to listen to user logging in
 // On click of the loginBtn, run a function
@@ -38,7 +38,26 @@ loginBtn.click(function () {
   // That checks to see if the usernameText value is not equal to an empty string
   if (usernameText.val() !== "") {
     console.log(usernameText.val());
-    // If so, set the username variable to be the value the user entered, capitalized
-    username = usernameText.val();
+    // If so, set the username variable to be the value the user entered, capitalize first letter
+    username =
+      usernameText.val().charAt(0).toUpperCase() + usernameText.val().slice(1);
+    console.log(username);
+
+    // Run logUserIntoGameFunc
+  }
+});
+
+// Create a function to listen to user logging in
+// On ENTER press, run a function
+usernameText.keypress(function (event) {
+  // Check that the event key pressed is enter and the usernameText value is not equal to an empty string
+  if (event.which === 13 && usernameText.val() !== "") {
+    console.log(usernameText.val());
+    // If so, set the username variable to be the value the user entered, capitalize first letter
+    username =
+      usernameText.val().charAt(0).toUpperCase() + usernameText.val().slice(1);
+    console.log(username);
+
+    // Run logUserIntoGameFunc
   }
 });

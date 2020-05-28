@@ -3,17 +3,14 @@ header {
     justify-content: center;
 }
 
-#game-wrapper {
-    
-}
+#game-wrapper {}
 
 #directions-disp {
     display: flex;
     justify-content: center;
 }
 
-#battlefield-area-row {
-}
+#battlefield-area-row {}
 
 #p1-disp {
     border: solid 1px blue;
@@ -76,6 +73,34 @@ header {
     margin: 0 auto
 }
 
-.stats-disp > * {
+.stats-disp>* {
     margin: 20px;
+}
+
+#chat-disp {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 90%;
+    height: 30%;
+}
+
+#chat-messages-disp {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    height: 20%;
+    overflow: auto;
+    background-color: #fffcf7;
+}
+
+#chat-bar {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    position: absolute;
+}
+
+#chat-input {
+    width: 100%;
 }
