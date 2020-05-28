@@ -1,0 +1,75 @@
+header {
+    display: flex;
+    justify-content: center;
+}
+
+#game-wrapper {
+    
+}
+
+#directions-disp {
+    display: flex;
+    justify-content: center;
+}
+
+#battlefield-area-row {
+}
+
+#p1-disp {
+    border: solid 1px blue;
+    height: 250px;
+    position: relative;
+    text-align: center;
+}
+
+#p1-options-disp {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    bottom: 40%;
+    width: 100%;
+}
+
+#interaction-disp {
+    border: solid 1px green;
+    height: 250px;
+    text-align: center;
+}
+
+#p2-disp {
+    border: solid 1px red;
+    height: 250px;
+    position: relative;
+    text-align: center;
+}
+
+#p2-options-disp {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    bottom: 40%;
+    width: 100%;
+}
+
+.option-img {
+    height: 50px;
+    width: auto;
+    float: left;
+    margin: 10px;
+}
+
+.clearfix {
+    clear: both;
+}
+
+.stats-disp {
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+    position: absolute;
+    bottom: 0;
+}
+
+.stats-disp > * {
+    margin: 20px;
+}

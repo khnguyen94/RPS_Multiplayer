@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- Viewport Metatag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <!-- Link Reset CSS -->
+    <link rel="stylesheet" href="./public/assets/css/reset.css/" />
+
+    <!-- Link Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+
+    <!-- Link Custom CSS Overrides-->
+    <link rel="stylesheet" href="./public/assets/css/style.css" />
+
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
+
+    <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-analytics.js"></script>
+
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-firestore.js"></script>
+
+    <title>RPS - Multiplayer</title>
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header>
+      <h1>Rock, Paper, Scissors - Multiplayer</h1>
+    </header>
+
+    <br />
+
+    <!-- Game Wrapper -->
+    <div id="game-wrapper">
+      <!-- Battlefield -->
+      <div id="battlefield-area">
+        <div class="jumbotron">
+          <!-- Name Login -->
+          <div id="directions-disp">
+            <input id="username-text" placeholder="Your Username Here" />
+            <button id="login-btn">Log In</button>
+          </div>
+
+          <br />
+
+          <hr class="my-4" />
+
+          <div class="row">
+            <!-- One -->
+            <div class="col-sm">
+              <!-- Player 1 Disp-->
+              <div id="p1-disp">
+                <h3>
+                  Player 1:
+                  <p id="p1-name-text"></p>
+                </h3>
+
+                <hr class="my-4" />
+
+                <ul id="p1-options-disp">
+                  <li>
+                    <img
+                      class="option-img"
+                      data-option="rock"
+                      src="./public/assets/images/rock.png"
+                      alt="Rock"
+                    />
+                  </li>
+                  <li>
+                    <img
+                      class="option-img"
+                      data-option="paper"
+                      src="./public/assets/images/paper.png"
+                      alt="Paper"
+                    />
+                  </li>
+                  <li>
+                    <img
+                      class="option-img"
+                      data-option="scissors"
+                      src="./public/assets/images/scissors.png"
+                      alt="Scissors"
+                    />
+                  </li>
+                  <div class="clearfix"></div>
+                </ul>
+
+                <div id="p1-stats-disp" class="stats-disp">
+                  <h5 id="p1-wins-text">
+                    Wins:
+                    <p id="p1-wins-counter-text"></p>
+                  </h5>
+                  <h5 id="p1-ties-text">
+                    Ties:
+                    <p id="p1-ties-counter-text"></p>
+                  </h5>
+                  <h5 id="p1-ties-text">
+                    Losses:
+                    <p id="p1-ties-counter-text"></p>
+                  </h5>
+                </div>
+              </div>
+            </div>
+
+            <!-- Two -->
+            <div class="col-sm">
+              <!-- Interaction Disp -->
+              <div id="interaction-disp">
+                <div id="interaction-text">Current Action</div>
+              </div>
+            </div>
+
+            <!-- Three -->
+            <div class="col-sm">
+              <!-- Player 2 Disp-->
+              <div id="p2-disp">
+                <h3>
+                  Player 2:
+                  <p id="p1-name-text"></p>
+                </h3>
+
+                <hr class="my-4" />
+
+                <ul id="p2-options-disp">
+                  <li>
+                    <img
+                      class="option-img"
+                      data-option="rock"
+                      src="./public/assets/images/rock.png"
+                      alt="Rock"
+                    />
+                  </li>
+                  <li>
+                    <img
+                      class="option-img"
+                      data-option="paper"
+                      src="./public/assets/images/paper.png"
+                      alt="Paper"
+                    />
+                  </li>
+                  <li>
+                    <img
+                      class="option-img"
+                      data-option="scissors"
+                      src="./public/assets/images/scissors.png"
+                      alt="Scissors"
+                    />
+                  </li>
+                  <div class="clearfix"></div>
+                </ul>
+
+                <div id="p2-stats-disp" class="stats-disp">
+                  <h5 id="p2-wins-text">
+                    Wins:
+                    <p id="p2-wins-counter-text"></p>
+                  </h5>
+                  <h5 id="p2-ties-text">
+                    Ties:
+                    <p id="p2-ties-counter-text"></p>
+                  </h5>
+                  <h5 id="p2-ties-text">
+                    Losses:
+                    <p id="p2-ties-counter-text"></p>
+                  </h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Link JQuery CDN -->
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"
+    ></script>
+
+    <!-- Link JS Game File -->
+    <script
+      type="text/javascript"
+      src="./public/assets/javascript/app.js"
+    ></script>
+  </body>
+</html>
