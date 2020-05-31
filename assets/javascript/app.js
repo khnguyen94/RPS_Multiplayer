@@ -22,7 +22,7 @@ let currentTurnRef = database.ref("turn-ref");
 // Initialize game variables
 let username = "Guest";
 let currentPlayersCount = null;
-let currentPhase = null;
+let currentTurn = null;
 let playerNum = false;
 let playerOneExists = false;
 let playerTwoExists = false;
@@ -31,13 +31,20 @@ let playerTwoData = null;
 
 // Create HTML Dom references
 // USERNAME
-let directionsDisp = $("#directions-disp");
+let usernameDisp = $("#username-disp");
 let loginBtn = $("#login-btn");
 let usernameText = $("#username-text");
 
 // CHAT
 let sendChatBtn = $("#send-chat-btn");
 let chatText = $("#chat-input");
+
+// BATTLEFIELD
+let interactionText = $("#interaction-text");
+
+// USERS
+let p1Disp = $("#p1-disp");
+let p2Disp = $("#p2-disp");
 
 // USER LOGIN GAME
 // Create a function to log user into the game
@@ -52,10 +59,14 @@ let loginGameFunc = () => {
     if (playerOneExists) {
       // Then that new player that just logged in is now player 2
       playerNum = 2;
+
+      console.log(username + ", you are player " + playerNum);
     }
     // Else, that player is playerOne
     else {
       playerNum = 1;
+
+      console.log(username + ", you are player " + playerNum);
     }
 
     // Access the playerRef collection in the database and create a key based on the assigned player number
@@ -84,16 +95,16 @@ let loginGameFunc = () => {
       message: "has disconnected.",
     });
 
-    // Remove name input box from directionsDisp
-    directionsDisp.empty();
+    // Remove name input box from usernameDisp
+    usernameDisp.empty();
 
     // Create a HTML element that confirms player logged in
     let playerLoggedInMsg = $("<h3>").text(
       "Hi, " + username + "! You are Player " + playerNum
     );
 
-    // And show that message in directionsDisp
-    directionsDisp.append(playerLoggedInMsg);
+    // And show that message in usernameDisp
+    usernameDisp.append(playerLoggedInMsg);
 
     // Else, if playerNum is already at two (there are already two players logged in), alert user trying to log in that the game is currently full
   } else {
@@ -101,17 +112,66 @@ let loginGameFunc = () => {
   }
 };
 
+// TURN
+// Create a function to detect changes to the turn collection in the database
+currentTurnRef.on("value", function (snapshot) {
+  // Get the current turn from the snapshot
+  currentTurn = snapshot.val();
+
+  // Check to see if player is logged in and therefore playerNum exists and is set
+  if (playerNum) {
+    // Check to see if the currentTurn is 1
+    if (currentTurn === 1) {
+      // If its the current player's turn, let them know it's their turn and tell them to pick an option
+      if (currentTurn === playerNum) {
+        // Create an HTML element to hold directions for user to pick an option
+        let turnDirections = $("<p>").text(
+          "It's your turn. Please pick an option."
+        );
+
+        // Clear battlefield interactionText
+        interactionText.empty();
+
+        // Display that message to the battlefield interactionText
+        interactionText.text(turnDirections);
+      }
+      // Else, if it isnt the current players turn, tell them to wait for first player to choose
+      else {
+        // Create HTML lement to hold alt directions
+        let turnDirectionsAlt = $("<p>").text(
+          "Waiting for Player 1: " + playerOneData.username + " to choose."
+        );
+
+        // Clear battlefield interactionText
+        interactionText.empty();
+
+        // Display that message to the battlefield interactionText
+        interactionText.text(turnDirectionsAlt);
+      }
+
+      // Highlight the border of th active player
+
+      p1Disp.css("border", "3px solid yellow");
+      p2Disp.css("border", "1px solid black");
+    }
+
+    // Else if, the currentTurn is 2
+    else if (currentTurn === 2) {
+        
+    }
+  }
+});
+
 // USERNAME
 // Create a function to listen to user logging in
 // On click of the loginBtn, run a function
 loginBtn.click(function () {
   // That checks to see if the usernameText value is not equal to an empty string
   if (usernameText.val() !== "") {
-    console.log(usernameText.val());
     // If so, set the username variable to be the value the user entered, capitalize first letter
     username =
       usernameText.val().charAt(0).toUpperCase() + usernameText.val().slice(1);
-    console.log(username);
+    console.log("User Created: " + username);
 
     // Run loginGameFunc
     loginGameFunc();

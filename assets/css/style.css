@@ -5,7 +5,7 @@ header {
 
 #game-wrapper {}
 
-#directions-disp {
+#username-disp {
     display: flex;
     justify-content: center;
 }
