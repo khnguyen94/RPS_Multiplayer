@@ -16,12 +16,12 @@ firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
 console.log(database);
 let chatCollection = database.ref("chat-data");
-// let playersRef = database.ref("players");
-// let currentTurnRef = database.ref("turn");
+let playerList = database.ref("player-list");
+let currentTurnRef = database.ref("turn-ref");
 
 // Initialize game variables
 let username = "Guest";
-let currentPlayers = null;
+let currentPlayersCount = null;
 let currentPhase = null;
 let playerNum = false;
 let playerOneExists = false;
@@ -31,12 +31,75 @@ let playerTwoData = null;
 
 // Create HTML Dom references
 // USERNAME
+let directionsDisp = $("#directions-disp");
 let loginBtn = $("#login-btn");
 let usernameText = $("#username-text");
 
 // CHAT
 let sendChatBtn = $("#send-chat-btn");
 let chatText = $("#chat-input");
+
+// USER LOGIN GAME
+// Create a function to log user into the game
+let loginGameFunc = () => {
+  // Create a reference to the chat data discussion log
+  let chatDataLog = database.ref("/chat/" + Date.now());
+
+  // Check for players currently logged into the game
+  // If currentPlayersCount is less than two, meaning that there are no or only one player logged in
+  if (currentPlayersCount < 2) {
+    // Check to see that playerOne exists
+    if (playerOneExists) {
+      // Then that new player that just logged in is now player 2
+      playerNum = 2;
+    }
+    // Else, that player is playerOne
+    else {
+      playerNum = 1;
+    }
+
+    // Access the playerRef collection in the database and create a key based on the assigned player number
+    playerList = database.ref("/player-list/" + playerNum);
+
+    // Create a player object with: username, wins, losses, and option choice
+    playerList.set({
+      username: username,
+      wins: 0,
+      losses: 0,
+      choice: null,
+    });
+
+    // When they disconnect from the game, remove this user's player object from playerList
+    playerList.onDisconnect().remove();
+
+    // If a player disconnects, set the current turn to null so that the game does not continue
+
+    currentTurnRef.onDisconnect().remove();
+
+    // Send a disconnect message to chat with Firebase server generated timestamp and id of '0' to denote system message
+    chatDataLog.onDisconnect().set({
+      userID: 0,
+      username: username,
+      time: firebase.database.ServerValue.TIMESTAMP,
+      message: "has disconnected.",
+    });
+
+    // Remove name input box from directionsDisp
+    directionsDisp.empty();
+
+    // Create a HTML element that confirms player logged in
+    let playerLoggedInMsg = $("<h3>").text(
+      "Hi, " + username + "! You are Player " + playerNum
+    );
+
+    // And show that message in directionsDisp
+    directionsDisp.append(playerLoggedInMsg);
+
+    // Else, if playerNum is already at two (there are already two players logged in), alert user trying to log in that the game is currently full
+  } else {
+    alert("Sorry, the game is currently full!");
+  }
+};
 
 // USERNAME
 // Create a function to listen to user logging in
@@ -50,7 +113,8 @@ loginBtn.click(function () {
       usernameText.val().charAt(0).toUpperCase() + usernameText.val().slice(1);
     console.log(username);
 
-    // Run logUserIntoGameFunc
+    // Run loginGameFunc
+    loginGameFunc();
   }
 });
 
@@ -65,7 +129,8 @@ usernameText.keypress(function (event) {
       usernameText.val().charAt(0).toUpperCase() + usernameText.val().slice(1);
     console.log(username);
 
-    // Run logUserIntoGameFunc
+    // Run loginGameFunc
+    loginGameFunc();
   }
 });
 
@@ -83,7 +148,12 @@ sendChatBtn.click(function () {
     chatMessage = chatText.val();
 
     // Push an object to the chatData database containing: userID number, username of sender, their message, and a timestamp
-    // Line 52
+    chatCollection.push({
+      userID: playerNum,
+      userName: userName,
+      message: chatMessage,
+      timestamp: firebase.database.ServerValue.TIMESTAMP,
+    });
 
     // Clear the input
     chatText.val("");
@@ -110,35 +180,35 @@ chatText.keypress(function (event) {
 });
 
 // Create a function that listens to database's chatCollection for when a new child (message) is detected, order each child (message) by time
-chatCollection.orderByChild("time").on(
-  "child_added",
-  function (snapshot) {
-    // Log everything that's coming out of snapshot
-    console.log(snapshot.val());
+// chatCollection.orderByChild("time").on(
+//   "child_added",
+//   function (snapshot) {
+//     // Log everything that's coming out of snapshot
+//     console.log(snapshot.val());
 
-    // Create a new HTML p tag element for the new message
-    let newMsg = $("<p>", {
-      class: "player-" + snapshot.val().idNum,
-    });
+//     // Create a new HTML p tag element for the new message
+//     let newMsg = $("<p>", {
+//       class: "player-" + snapshot.val().idNum,
+//     });
 
-    // Create a new HTML span tag element to hold new message text
-    let newMsgText = $("<span>", {
-      class: "player-" + snapshot.val().idNum + "-msg",
-    }).text(snapshot.val().name + ": " + snapshot.val().message);
+//     // Create a new HTML span tag element to hold new message text
+//     let newMsgText = $("<span>", {
+//       class: "player-" + snapshot.val().idNum + "-msg",
+//     }).text(snapshot.val().name + ": " + snapshot.val().message);
 
-    // Construct the newMsg
-    newMsg.append(newMsgText);
+//     // Construct the newMsg
+//     newMsg.append(newMsgText);
 
-    // Append message to message list disp
+//     // Append message to message list disp
 
-    // Keep div scrolled to bottom of each new updated message
-    //   $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
-  },
-  // Handle errors
-  (err) => {
-    console.log("Errors handled: " + err.code);
-  }
-);
+//     // Keep div scrolled to bottom of each new updated message
+//     //   $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
+//   },
+//   // Handle errors
+//   (err) => {
+//     console.log("Errors handled: " + err.code);
+//   }
+// );
 
 // OPTIONS
 // Create an on click listener for when a player selects a RPS option, run a function

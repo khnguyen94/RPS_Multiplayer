@@ -89,9 +89,9 @@ header {
     display: flex;
     justify-content: center;
     position: absolute;
-    height: 20%;
-    overflow: auto;
     background-color: #fffcf7;
+    height: 125px;
+    overflow: auto;
 }
 
 #chat-bar {
