@@ -175,6 +175,26 @@ let renderOptionsFunc = (disp) => {
   disp.append(liItemRock, liItemPaper, liItemScissors);
 };
 
+// Create a function to render single chosen option
+let renderChosenOptionFunc = (chosen, disp) => {
+  // Create a HTML element for the chosen list item option
+  let chosenOption = $("<li>");
+
+  // Create an img tag for chosen list item option
+  let chosenOptionImg = $("<img>", {
+    class: "option-img",
+    dataOption: chosen,
+    src: "./assets/images/" + chosen + ".png",
+    alt: chosen,
+  });
+
+  // Construct li item for chosen option
+  chosenOption.append(chosenOptionImg);
+
+  // Append chosen option to disp
+  disp.append(chosenOption);
+};
+
 // Create a function to render loading dots
 let renderWaitingDotsFunc = (disp) => {
   // Create a HTML element to hold loading dots
@@ -217,15 +237,17 @@ playerList.on("value", function (snapshot) {
   playerOneData = snapshot.child("1").val();
   playerTwoData = snapshot.child("2").val();
 
-  console.log("Player 1 Exists: ");
+  console.log("Player One Exists: ");
   console.log(playerOneExists);
   console.log("Player One Data: ");
   console.log(playerOneData);
 
-  console.log("Player 2 Exists: ");
+  console.log("Player Two Exists: ");
   console.log(playerTwoExists);
   console.log("Player Two Data: ");
   console.log(playerTwoData);
+
+  console.log("____________________");
 
   // If playerOneExists is true,
   if (playerOneExists) {
@@ -243,6 +265,10 @@ playerList.on("value", function (snapshot) {
   }
   // Else if playerOneExist is false, set win/ties/losses to "-" and show loading dots
   else {
+    // Clear p2Nametext
+    p2NameText.empty();
+
+    // Run renderWaitingDotsFunc on p1NameText
     renderWaitingDotsFunc(p1NameText);
   }
 
@@ -262,6 +288,10 @@ playerList.on("value", function (snapshot) {
   }
   // Else if playerTwoExist is false, set win/ties/losses to "-" and show loading dots
   else {
+    // Clear p2Nametext
+    p2NameText.empty();
+
+    // Run renderWaitingDotsFunc on p2NameText
     renderWaitingDotsFunc(p2NameText);
   }
 });
@@ -430,17 +460,35 @@ $(document).on("click", "li", function () {
   // Get a handle on the option clicked
   let clickedOption = $(this);
 
-  console.log("Clicked: " + clickedOption);
-
   // Get a handle on the option's data-option
   let clickOptionData = clickedOption
     .children("img.option-img")
-    .attr("data-option");
+    .attr("dataoption");
 
+  console.log("Clicked: ");
   console.log(clickOptionData);
 
   // Set the player's opton choice in the current player object in firebase
-  // Line 89
+  playerList.child("choice").set(clickOptionData);
+
+  // When player has chosen and their choice is updated in their person object in player-list collection
+  // Clear the options display
+  $("#p" + playerNum + "-options-disp").empty();
+
+  // And render only their chosen option
+  renderChosenOptionFunc(
+    clickOptionData,
+    $("#p" + playerNum + "-options-disp")
+  );
+
+  // Increment turn
+  // Turns:
+  // 1 - Player 1
+  // 2 - Player 2
+  // 3 - Determine winner
+  currentTurnRef.transaction(function (turn) {
+    return turn + 1;
+  });
 });
 
 // Create a function that renders a battlefield box in the current action disp
