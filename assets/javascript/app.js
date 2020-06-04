@@ -59,6 +59,38 @@ let p2WinsText = $("#p2-wins-counter-text");
 let p2TiesText = $("#p2-ties-counter-text");
 let p2LossesText = $("#p2-losses-counter-text");
 
+// USERNAME
+// Create a function to listen to user logging in
+// On click of the loginBtn, run a function
+loginBtn.click(function () {
+  // That checks to see if the usernameText value is not equal to an empty string
+  if (usernameText.val() !== "") {
+    // If so, set the username variable to be the value the user entered, capitalize first letter
+    username =
+      usernameText.val().charAt(0).toUpperCase() + usernameText.val().slice(1);
+    // console.log("User Created: " + username);
+
+    // Run loginGameFunc
+    loginGameFunc();
+  }
+});
+
+// Create a function to listen to user logging in
+// On ENTER press, run a function
+usernameText.keypress(function (event) {
+  // Check that the event key pressed is enter and the usernameText value is not equal to an empty string
+  if (event.which === 13 && usernameText.val() !== "") {
+    console.log(usernameText.val());
+    // If so, set the username variable to be the value the user entered, capitalize first letter
+    username =
+      usernameText.val().charAt(0).toUpperCase() + usernameText.val().slice(1);
+    console.log(username);
+
+    // Run loginGameFunc
+    loginGameFunc();
+  }
+});
+
 // USER LOGIN GAME
 // Create a function to log user into the game
 let loginGameFunc = () => {
@@ -79,7 +111,7 @@ let loginGameFunc = () => {
     else {
       playerNum = 1;
 
-      console.log(username + ", you are player " + playerNum);
+      //   console.log(username + ", you are player " + playerNum);
     }
 
     // Access the playerRef collection in the database and create a key based on the assigned player number
@@ -307,6 +339,7 @@ currentTurnRef.on("value", function (snapshot) {
     // Check to see if the currentTurn is 1
     if (currentTurn === 1) {
       // If its the current player's turn, let them know it's their turn and tell them to pick an option
+      // They are player one
       if (currentTurn === playerNum) {
         // Create an HTML element to hold directions for user to pick an option
         let turnDirections = $("<p>").text(
@@ -317,9 +350,10 @@ currentTurnRef.on("value", function (snapshot) {
         interactionText.empty();
 
         // Display that message to the battlefield interactionText
-        interactionText.text(turnDirections);
+        interactionText.append(turnDirections);
       }
       // Else, if it isnt the current players turn, tell them to wait for first player to choose
+      // They are NOT player one
       else {
         // Create HTML lement to hold alt directions
         let turnDirectionsAlt = $("<p>").text(
@@ -330,7 +364,7 @@ currentTurnRef.on("value", function (snapshot) {
         interactionText.empty();
 
         // Display that message to the battlefield interactionText
-        interactionText.text(turnDirectionsAlt);
+        interactionText.append(turnDirectionsAlt);
       }
 
       // Highlight the border of th active player
@@ -340,41 +374,43 @@ currentTurnRef.on("value", function (snapshot) {
     }
 
     // Else if, the currentTurn is 2
+    // They are player two
     else if (currentTurn === 2) {
-      // Tell them to
+      // If its the current player's turn, let them know it's their turn and tell them to pick an option
+      if (currentTurn === playerNum) {
+        // Create an HTML element to hold directions for user to pick an option
+        let turnDirections = $("<p>").text(
+          "It's your turn. Please pick an option."
+        );
+
+        // Clear battlefield interactionText
+        interactionText.empty();
+
+        // Display that message to the battlefield interactionText
+        interactionText.append(turnDirections);
+      }
+      // Else, if it isnt the current players turn, tell them to wait for second player to choose
+      // They are NOT player two
+      else {
+        // Create HTML lement to hold alt directions
+        let turnDirectionsAlt = $("<p>").text(
+          "Waiting for Player 2: " + playerTwoData.username + " to choose."
+        );
+
+        // Clear battlefield interactionText
+        interactionText.empty();
+
+        // Display that message to the battlefield interactionText
+        interactionText.append(turnDirectionsAlt);
+      }
+
+      // Shows yellow border around active player
+      $("#player2").css("border", "2px solid yellow");
+      $("#player1").css("border", "1px solid black");
     }
-  }
-});
-
-// USERNAME
-// Create a function to listen to user logging in
-// On click of the loginBtn, run a function
-loginBtn.click(function () {
-  // That checks to see if the usernameText value is not equal to an empty string
-  if (usernameText.val() !== "") {
-    // If so, set the username variable to be the value the user entered, capitalize first letter
-    username =
-      usernameText.val().charAt(0).toUpperCase() + usernameText.val().slice(1);
-    console.log("User Created: " + username);
-
-    // Run loginGameFunc
-    loginGameFunc();
-  }
-});
-
-// Create a function to listen to user logging in
-// On ENTER press, run a function
-usernameText.keypress(function (event) {
-  // Check that the event key pressed is enter and the usernameText value is not equal to an empty string
-  if (event.which === 13 && usernameText.val() !== "") {
-    console.log(usernameText.val());
-    // If so, set the username variable to be the value the user entered, capitalize first letter
-    username =
-      usernameText.val().charAt(0).toUpperCase() + usernameText.val().slice(1);
-    console.log(username);
-
-    // Run loginGameFunc
-    loginGameFunc();
+    // Else if currentTurn is 3
+    else if (currentTurn === 3) {
+    }
   }
 });
 
@@ -455,7 +491,7 @@ chatText.keypress(function (event) {
 // );
 
 // OPTIONS
-// Create an on click listener for when a player selects a RPS option, run a function
+// Create an on click listener for when player 1 selects a RPS option, run a function
 $(document).on("click", "li", function () {
   // Get a handle on the option clicked
   let clickedOption = $(this);
@@ -491,6 +527,68 @@ $(document).on("click", "li", function () {
   });
 });
 
+// GAME LOGIC
+// Create a function that handles the RPS game logic
+let gameLogicFunc = (p1Choice, p2Choice) => {
+  // Create function for scenario where P1 wins
+  let p1WinsFunc = () => {
+    // Updates to P1 db object
+    // Access the P1's player object in the player-list reference
+    // If playerNum is 1, then
+    // Access the player @ index of 1
+    // Access the WINS property
+    // Set it to be the local WINS count for P1 plus 1
+
+    // Updates to P2 db object
+    // Access the P2's player object in the player-list reference
+    // If playerNum is 2, then
+    // Access the player @ index of 2
+    // Access the LOSSES property
+    // Set it to be the local LOSSES count for P2 plus 1
+
+    // Change the text in the battlefield disp to reflect P1 victory
+  };
+
+  // Create function for scenario where P2 wins
+  let p2WinsFunc = () => {
+    // Updates to P2 db object
+    // Access the P2's player object in the player-list reference
+    // If playerNum is 2, then
+    // Access the player @ index of 2
+    // Access the WINS property
+    // Set it to be the local WINS count for P2 plus 1
+
+    // Updates to P1 db object
+    // Access the P1's player object in the player-list reference
+    // If playerNum is 1, then
+    // Access the player @ index of 1
+    // Access the LOSSES property
+    // Set it to be the local LOSSES count for P1 plus 1
+
+    // Change the text in the battlefield disp to reflect P2 victory
+  };
+
+  // Create function for scenario where P1 and P2 tie
+  let tieFunc = () => {
+    // Updates to P1 db object
+    // Access the P1's player object in the player-list reference
+    // If playerNum is 1, then
+    // Access the player @ index of 1
+    // Access the TIES property
+    // Set it to be the local TIES count for P2 plus 1
+
+    // Updates to P2 db object
+    // Access the P2's player object in the player-list reference
+    // If playerNum is 2, then
+    // Access the player @ index of 2
+    // Access the TIES property
+    // Set it to be the local TIES count for P1 plus 1
+
+    // Change the text in the battlefield disp to reflect tie
+  };
+};
+
+// BATTLEFIELD
 // Create a function that renders a battlefield box in the current action disp
 // Take in player's option choice as a parameter
 let renderBattlefieldFunc = (choice) => {
