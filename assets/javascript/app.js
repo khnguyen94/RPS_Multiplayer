@@ -129,81 +129,141 @@ let loginGameFunc = () => {
 // RENDERINGS
 // Create a function that dynamically renders RPS options to player 1/2 options disp
 let renderOptionsFunc = (disp) => {
-    // Create a HTML element for list item rock
-    let liItemRock = $("<li>");
+  // Create a HTML element for list item rock
+  let liItemRock = $("<li>");
 
-    // Create an img tag for list item rock
-    let imgRock = $("<img>", {
-        class: "option-img",
-        dataOption: "rock",
-        src: "./assets/images/rock.png",
-        alt: "Rock"
-    });
+  // Create an img tag for list item rock
+  let imgRock = $("<img>", {
+    class: "option-img",
+    dataOption: "rock",
+    src: "./assets/images/rock.png",
+    alt: "Rock",
+  });
 
-    // Construct li item for rock
-    liItemRock.append(imgRock);
+  // Construct li item for rock
+  liItemRock.append(imgRock);
 
-    // Create a HTML element for list item paper
-    let liItemPaper = $("<li>");
+  // Create a HTML element for list item paper
+  let liItemPaper = $("<li>");
 
-    // Create an img tag for list item rock
-    let imgPaper = $("<img>", {
-        class: "option-img",
-        dataOption: "paper",
-        src: "./assets/images/paper.png",
-        alt: "Paper"
-    });
+  // Create an img tag for list item rock
+  let imgPaper = $("<img>", {
+    class: "option-img",
+    dataOption: "paper",
+    src: "./assets/images/paper.png",
+    alt: "Paper",
+  });
 
-    // Construct li item for rock
-    liItemPaper.append(imgPaper);
+  // Construct li item for rock
+  liItemPaper.append(imgPaper);
 
-    // Create a HTML element for list item scissors
-    let liItemScissors = $("<li>");
+  // Create a HTML element for list item scissors
+  let liItemScissors = $("<li>");
 
-    // Create an img tag for list item rock
-    let imgScissors = $("<img>", {
-        class: "option-img",
-        dataOption: "scissors",
-        src: "./assets/images/scissors.png",
-        alt: "Scissors"
-    });
+  // Create an img tag for list item rock
+  let imgScissors = $("<img>", {
+    class: "option-img",
+    dataOption: "scissors",
+    src: "./assets/images/scissors.png",
+    alt: "Scissors",
+  });
 
-    // Construct li item for rock
-    liItemScissors.append(imgScissors);
+  // Construct li item for rock
+  liItemScissors.append(imgScissors);
 
-    // Append all three option list items to disp
-    disp.append(liItemRock, liItemPaper, liItemScissors);
+  // Append all three option list items to disp
+  disp.append(liItemRock, liItemPaper, liItemScissors);
+};
+
+// Create a function to render loading dots
+let renderWaitingDotsFunc = (disp) => {
+  // Create a HTML element to hold loading dots
+  let dotsContainer = $("<div>", {
+    class: "loading-dots",
+  });
+
+  // Create 3 HTML element for 3 dots
+  let dot1 = $("<div>", {
+    class: "dot1",
+  });
+
+  let dot2 = $("<div>", {
+    class: "dot2",
+  });
+
+  let dot3 = $("<div>", {
+    class: "dot3",
+  });
+
+  // Contruct the loading dots element
+  dotsContainer.append(dot1, dot2, dot3);
+
+  // Append to disp
+  disp.append(dotsContainer);
 };
 
 // PLAYER
 // Create a function to detect changes to the player-list in the database
-playerList.on("value", function(snapshot) {
-    // Access the current length of the player-list array snapshot, set it equal to currentPlayersCount
-    currentPlayersCount = snapshot.numChildren();
+playerList.on("value", function (snapshot) {
+  // Access the current length of the player-list array snapshot, set it equal to currentPlayersCount
+  currentPlayersCount = snapshot.numChildren();
 
-    // Check to see that two players exist in player-list collection and update playerOneExists and playerTwoExists variables
-    playerOneExists = snapshot.child("1").exists();
-    playerTwoExists = snapshot.child("2").exists();
-    // If two players exist in snapshot of player-list collection, then these two variables should now have value of true
+  // Check to see that two players exist in player-list collection and update playerOneExists and playerTwoExists variables
+  playerOneExists = snapshot.child("1").exists();
+  playerTwoExists = snapshot.child("2").exists();
+  // If two players exist in snapshot of player-list collection, then these two variables should now have value of true
 
-    // Pull and store the data of those two players into the local variables: playerOneData and playerTwoData
-    playerOneData = snapshot.child("1").val();
-    playerTwoData = snapshot.child("2").val();
+  // Pull and store the data of those two players into the local variables: playerOneData and playerTwoData
+  playerOneData = snapshot.child("1").val();
+  playerTwoData = snapshot.child("2").val();
 
-    // If playerOneExists is true,
-    if (playerOneExists) {
-        console.log("Player 1 Local Data: ");
-        console.log(playerOneData);
+  console.log("Player 1 Exists: ");
+  console.log(playerOneExists);
+  console.log("Player One Data: ");
+  console.log(playerOneData);
 
-        // Run renderOptionsFunc on p1OptionsDisp
-        renderOptionsFunc(p1OptionsDisp);
+  console.log("Player 2 Exists: ");
+  console.log(playerTwoExists);
+  console.log("Player Two Data: ");
+  console.log(playerTwoData);
 
-        // Pull and set: name and win/tie/loss records for playerOne
-        p1NameText.text(playerOneData.username);
-        p1WinsText.text(playerOneData.wins);
-        p1TiesText.text(playerOneData.ties);
-        p1LossesText.text(playerOneData.losses);
-    };
+  // If playerOneExists is true,
+  if (playerOneExists) {
+    // Clear p1OptionsDisp
+    p1OptionsDisp.empty();
+
+    // Run renderOptionsFunc on p1OptionsDisp
+    renderOptionsFunc(p1OptionsDisp);
+
+    // Pull and set: name and win/tie/loss records for playerOne
+    p1NameText.text(playerOneData.username);
+    p1WinsText.text(playerOneData.wins);
+    p1TiesText.text(playerOneData.ties);
+    p1LossesText.text(playerOneData.losses);
+  }
+  // Else if playerOneExist is false, set win/ties/losses to "-" and show loading dots
+  else {
+    renderWaitingDotsFunc(p1NameText);
+  }
+
+  // If playerTwoExists is true,
+  if (playerTwoExists) {
+    // Clear p2OptionsDisp
+    p2OptionsDisp.empty();
+
+    // Run renderOptionsFunc on p2OptionsDisp
+    renderOptionsFunc(p2OptionsDisp);
+
+    // Pull and set: name and win/tie/loss records for playerOne
+    p2NameText.text(playerTwoData.username);
+    p2WinsText.text(playerTwoData.wins);
+    p2TiesText.text(playerTwoData.ties);
+    p2LossesText.text(playerTwoData.losses);
+  }
+  // Else if playerTwoExist is false, set win/ties/losses to "-" and show loading dots
+  else {
+    renderWaitingDotsFunc(p2NameText);
+  }
 });
 
 // TURN
@@ -251,7 +311,7 @@ currentTurnRef.on("value", function (snapshot) {
 
     // Else if, the currentTurn is 2
     else if (currentTurn === 2) {
-        // Tell them to 
+      // Tell them to
     }
   }
 });
