@@ -14,9 +14,13 @@ header {
 
 #p1-disp {
     border: solid 1px blue;
-    height: 250px;
+    height: 300px;
     position: relative;
     text-align: center;
+}
+
+h3 {
+    height: 70px
 }
 
 #p1-options-disp {
@@ -24,7 +28,6 @@ header {
     justify-content: center;
     position: absolute;
     list-style: none;
-    bottom: 40%;
     width: 100%;
     padding-left: 0;
 }
@@ -37,7 +40,7 @@ header {
 
 #p2-disp {
     border: solid 1px red;
-    height: 250px;
+    height: 300px;
     position: relative;
     text-align: center;
 }
@@ -47,7 +50,6 @@ header {
     justify-content: center;
     position: absolute;
     list-style: none;
-    bottom: 40%;
     width: 100%;
     padding-left: 0;
 }

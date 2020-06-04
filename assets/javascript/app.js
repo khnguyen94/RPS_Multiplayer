@@ -43,8 +43,21 @@ let chatText = $("#chat-input");
 let interactionText = $("#interaction-text");
 
 // USERS
+// Player 1
 let p1Disp = $("#p1-disp");
+let p1NameText = $("#p1-name-text");
+let p1OptionsDisp = $("#p1-options-disp");
+let p1WinsText = $("#p1-wins-counter-text");
+let p1TiesText = $("#p1-ties-counter-text");
+let p1LossesText = $("#p1-losses-counter-text");
+
+// Player 2
 let p2Disp = $("#p2-disp");
+let p2NameText = $("#p2-name-text");
+let p2OptionsDisp = $("#p2-options-disp");
+let p2WinsText = $("#p2-wins-counter-text");
+let p2TiesText = $("#p2-ties-counter-text");
+let p2LossesText = $("#p2-losses-counter-text");
 
 // USER LOGIN GAME
 // Create a function to log user into the game
@@ -76,6 +89,7 @@ let loginGameFunc = () => {
     playerList.set({
       username: username,
       wins: 0,
+      ties: 0,
       losses: 0,
       choice: null,
     });
@@ -111,6 +125,86 @@ let loginGameFunc = () => {
     alert("Sorry, the game is currently full!");
   }
 };
+
+// RENDERINGS
+// Create a function that dynamically renders RPS options to player 1/2 options disp
+let renderOptionsFunc = (disp) => {
+    // Create a HTML element for list item rock
+    let liItemRock = $("<li>");
+
+    // Create an img tag for list item rock
+    let imgRock = $("<img>", {
+        class: "option-img",
+        dataOption: "rock",
+        src: "./assets/images/rock.png",
+        alt: "Rock"
+    });
+
+    // Construct li item for rock
+    liItemRock.append(imgRock);
+
+    // Create a HTML element for list item paper
+    let liItemPaper = $("<li>");
+
+    // Create an img tag for list item rock
+    let imgPaper = $("<img>", {
+        class: "option-img",
+        dataOption: "paper",
+        src: "./assets/images/paper.png",
+        alt: "Paper"
+    });
+
+    // Construct li item for rock
+    liItemPaper.append(imgPaper);
+
+    // Create a HTML element for list item scissors
+    let liItemScissors = $("<li>");
+
+    // Create an img tag for list item rock
+    let imgScissors = $("<img>", {
+        class: "option-img",
+        dataOption: "scissors",
+        src: "./assets/images/scissors.png",
+        alt: "Scissors"
+    });
+
+    // Construct li item for rock
+    liItemScissors.append(imgScissors);
+
+    // Append all three option list items to disp
+    disp.append(liItemRock, liItemPaper, liItemScissors);
+};
+
+// PLAYER
+// Create a function to detect changes to the player-list in the database
+playerList.on("value", function(snapshot) {
+    // Access the current length of the player-list array snapshot, set it equal to currentPlayersCount
+    currentPlayersCount = snapshot.numChildren();
+
+    // Check to see that two players exist in player-list collection and update playerOneExists and playerTwoExists variables
+    playerOneExists = snapshot.child("1").exists();
+    playerTwoExists = snapshot.child("2").exists();
+    // If two players exist in snapshot of player-list collection, then these two variables should now have value of true
+
+    // Pull and store the data of those two players into the local variables: playerOneData and playerTwoData
+    playerOneData = snapshot.child("1").val();
+    playerTwoData = snapshot.child("2").val();
+
+    // If playerOneExists is true,
+    if (playerOneExists) {
+        console.log("Player 1 Local Data: ");
+        console.log(playerOneData);
+
+        // Run renderOptionsFunc on p1OptionsDisp
+        renderOptionsFunc(p1OptionsDisp);
+
+        // Pull and set: name and win/tie/loss records for playerOne
+        p1NameText.text(playerOneData.username);
+        p1WinsText.text(playerOneData.wins);
+        p1TiesText.text(playerOneData.ties);
+        p1LossesText.text(playerOneData.losses);
+    };
+});
 
 // TURN
 // Create a function to detect changes to the turn collection in the database
@@ -157,7 +251,7 @@ currentTurnRef.on("value", function (snapshot) {
 
     // Else if, the currentTurn is 2
     else if (currentTurn === 2) {
-        
+        // Tell them to 
     }
   }
 });
