@@ -31,6 +31,7 @@ let playerTwoData = null;
 
 // Create HTML Dom references
 // USERNAME
+let usernameTextField = $("#username-text");
 let usernameDisp = $("#username-disp");
 let loginBtn = $("#login-btn");
 let usernameText = $("#username-text");
@@ -94,8 +95,8 @@ usernameText.keypress(function (event) {
 // USER LOGIN GAME
 // Create a function to log user into the game
 let loginGameFunc = () => {
-  // Create a reference to the chat data discussion log
-  let chatDataLog = database.ref("/chat/" + Date.now());
+  // Create a reference for adding a disconnection
+  let chatDataDisc = database.ref("/chat/" + Date.now());
 
   // Check for players currently logged into the game
   // If currentPlayersCount is less than two, meaning that there are no or only one player logged in
@@ -111,7 +112,7 @@ let loginGameFunc = () => {
     else {
       playerNum = 1;
 
-      //   console.log(username + ", you are player " + playerNum);
+      console.log(username + ", you are player " + playerNum);
     }
 
     // Access the playerRef collection in the database and create a key based on the assigned player number
@@ -134,12 +135,15 @@ let loginGameFunc = () => {
     currentTurnRef.onDisconnect().remove();
 
     // Send a disconnect message to chat with Firebase server generated timestamp and id of '0' to denote system message
-    chatDataLog.onDisconnect().set({
+    chatDataDisc.onDisconnect().set({
       userID: 0,
       username: username,
       time: firebase.database.ServerValue.TIMESTAMP,
       message: "has disconnected.",
     });
+
+    // Empty out the input box for usernameTextField
+    usernameTextField.empty();
 
     // Remove name input box from usernameDisp
     usernameDisp.empty();
@@ -155,6 +159,119 @@ let loginGameFunc = () => {
     // Else, if playerNum is already at two (there are already two players logged in), alert user trying to log in that the game is currently full
   } else {
     alert("Sorry, the game is currently full!");
+  }
+};
+
+// INITIATE GAME
+// Check to see if there are two active players in the game
+
+// GAME LOGIC
+// Reads choices from the two active players and displays the results for who wins/loses/or if there is a tie in the interactionDisp
+// Increments the wins/losses/ties counter of two active players accordingly
+// Create a function for game logic that takes in two parameters: p1Choice and p2Choice
+let gameLogicFunc = (p1Choice, p2Choice) => {
+  // Create a function that runs in the scenario where p1 wins
+  let p1WinsFunc = () => {
+    // Confirm that playerNum is p1
+    if (playerNum === 1) {
+      // Access the playersList, access p1, access p1's wins, increment p1's wins by 1
+      playerList
+        .child("1")
+        .child("wins")
+        .set(playerOneData.wins + 1);
+
+      // Access the playersList, access p2, access p2's losses, increment p2's losses by 1
+      playerList
+        .child("2")
+        .child("losses")
+        .set(playerTwoData.losses + 1);
+    }
+
+    // Clear interactionText
+    interactionText.empty();
+
+    // Create a HTML element to hold the p1 win message
+    let p1WinMessage = $("<h2>").text(playerOneData.name + " wins!");
+
+    // Append p1 win message to interactionText
+    interactionText.append(p1WinMessage);
+  };
+
+  // Create a function that runs in the scenario where p2 wins
+  let p2WinsFunc = () => {
+    // Confirm that playerNum is p2
+    if (playerNum === 2) {
+      // Access the playersList, access p2, access p2's wins, increment p2's wins by 1
+      playerList
+        .child("2")
+        .child("wins")
+        .set(playerTwoData.wins + 1);
+
+      // Access the playersList, access p1, access p1's losses, increment p1's losses by 1
+      playerList
+        .child("1")
+        .child("losses")
+        .set(playerOneData.losses + 1);
+    }
+
+    // Clear interactionText
+    interactionText.empty();
+
+    // Create a HTML element to hold the p2 win message
+    let p2WinMessage = $("<h2>").text(playerTwoData.name + " wins!");
+
+    // Append p2 win message to interactionText
+    interactionText.append(p2WinMessage);
+  };
+
+  // Create a function that runs in the scenario of a tie
+  let tieFunc = () => {
+    // Access playerList, access p1, access p1's ties, increment p1's ties by 1
+    playerList
+      .child("1")
+      .child("ties")
+      .set(playerOneData.ties + 1);
+
+    // Access playerList, access p2, access p2's ties, increment p2's ties by 1
+    playerList
+      .child("2")
+      .child("ties")
+      .set(playerTwoData.ties + 1);
+
+    // Clear interactionText
+    interactionText.empty();
+
+    // Create a HTML element to hold the p2 win message
+    let tieGameMsg = $("<h2>").text("Tie game!");
+
+    // Append p2 win message to interactionText
+    interactionText.append(tieGameMsg);
+  };
+
+  // Define all possible outcomes
+  // Define all tie cases
+  if (p1Choice === "Rock" && p2Choice === "Rock") {
+    tieFunc();
+  } else if (p1Choice === "Paper" && p2Choice === "Paper") {
+    tieFunc();
+  } else if (p1Choice === "Scissors" && p2Choice === "Scissors") {
+    tieFunc();
+  }
+  // Define all p1 win cases
+  else if (p1Choice === "Rock" && p2Choice === "Scissors") {
+    p1WinsFunc();
+  } else if (p1Choice === "Paper" && p2Choice === "Rock") {
+    p1WinsFunc();
+  } else if (p1Choice === "Scissors" && p2Choice === "Paper") {
+    p1WinsFunc();
+  }
+  // Define all p2 win cases
+  else if (p1Choice === "Scissors" && p2Choice === "Rock") {
+    p2WinsFunc();
+  } else if (p1Choice === "Rock" && p2Choice === "Paper") {
+    p2WinsFunc();
+  } else if (p1Choice === "Paper" && p2Choice === "Scissors") {
+    p2WinsFunc();
   }
 };
 
@@ -526,67 +643,6 @@ $(document).on("click", "li", function () {
     return turn + 1;
   });
 });
-
-// GAME LOGIC
-// Create a function that handles the RPS game logic
-let gameLogicFunc = (p1Choice, p2Choice) => {
-  // Create function for scenario where P1 wins
-  let p1WinsFunc = () => {
-    // Updates to P1 db object
-    // Access the P1's player object in the player-list reference
-    // If playerNum is 1, then
-    // Access the player @ index of 1
-    // Access the WINS property
-    // Set it to be the local WINS count for P1 plus 1
-
-    // Updates to P2 db object
-    // Access the P2's player object in the player-list reference
-    // If playerNum is 2, then
-    // Access the player @ index of 2
-    // Access the LOSSES property
-    // Set it to be the local LOSSES count for P2 plus 1
-
-    // Change the text in the battlefield disp to reflect P1 victory
-  };
-
-  // Create function for scenario where P2 wins
-  let p2WinsFunc = () => {
-    // Updates to P2 db object
-    // Access the P2's player object in the player-list reference
-    // If playerNum is 2, then
-    // Access the player @ index of 2
-    // Access the WINS property
-    // Set it to be the local WINS count for P2 plus 1
-
-    // Updates to P1 db object
-    // Access the P1's player object in the player-list reference
-    // If playerNum is 1, then
-    // Access the player @ index of 1
-    // Access the LOSSES property
-    // Set it to be the local LOSSES count for P1 plus 1
-
-    // Change the text in the battlefield disp to reflect P2 victory
-  };
-
-  // Create function for scenario where P1 and P2 tie
-  let tieFunc = () => {
-    // Updates to P1 db object
-    // Access the P1's player object in the player-list reference
-    // If playerNum is 1, then
-    // Access the player @ index of 1
-    // Access the TIES property
-    // Set it to be the local TIES count for P2 plus 1
-
-    // Updates to P2 db object
-    // Access the P2's player object in the player-list reference
-    // If playerNum is 2, then
-    // Access the player @ index of 2
-    // Access the TIES property
-    // Set it to be the local TIES count for P1 plus 1
-
-    // Change the text in the battlefield disp to reflect tie
-  };
-};
 
 // BATTLEFIELD
 // Create a function that renders a battlefield box in the current action disp
