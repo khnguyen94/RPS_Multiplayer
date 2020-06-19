@@ -547,7 +547,7 @@ sendChatBtn.click(function () {
     // Push an object to the chatData database containing: userID number, username of sender, their message, and a timestamp
     chatCollection.push({
       userID: playerNum,
-      userName: userName,
+      username: username,
       message: chatMessage,
       timestamp: firebase.database.ServerValue.TIMESTAMP,
     });
@@ -569,7 +569,12 @@ chatText.keypress(function (event) {
     chatMessage = chatText.val();
 
     // Push an object to the chatData database containing: userID number, username of sender, their message, and a timestamp
-    // Line 52
+    chatCollection.push({
+      userID: playerNum,
+      username: username,
+      message: chatMessage,
+      timestamp: firebase.database.ServerValue.TIMESTAMP,
+    });
 
     // Clear the input
     chatText.val("");
@@ -577,35 +582,35 @@ chatText.keypress(function (event) {
 });
 
 // Create a function that listens to database's chatCollection for when a new child (message) is detected, order each child (message) by time
-// chatCollection.orderByChild("time").on(
-//   "child_added",
-//   function (snapshot) {
-//     // Log everything that's coming out of snapshot
-//     console.log(snapshot.val());
+chatCollection.orderByChild("time").on(
+  "child_added",
+  function (snapshot) {
+    // Log everything that's coming out of snapshot
+    console.log(snapshot.val());
 
-//     // Create a new HTML p tag element for the new message
-//     let newMsg = $("<p>", {
-//       class: "player-" + snapshot.val().idNum,
-//     });
+    // Create a new HTML p tag element for the new message
+    let newMsg = $("<p>", {
+      class: "player-" + snapshot.val().idNum,
+    });
 
-//     // Create a new HTML span tag element to hold new message text
-//     let newMsgText = $("<span>", {
-//       class: "player-" + snapshot.val().idNum + "-msg",
-//     }).text(snapshot.val().name + ": " + snapshot.val().message);
+    // Create a new HTML span tag element to hold new message text
+    let newMsgText = $("<span>", {
+      class: "player-" + snapshot.val().idNum + "-msg",
+    }).text(snapshot.val().name + ": " + snapshot.val().message);
 
-//     // Construct the newMsg
-//     newMsg.append(newMsgText);
+    // Construct the newMsg
+    newMsg.append(newMsgText);
 
-//     // Append message to message list disp
+    // Append message to message list disp
 
-//     // Keep div scrolled to bottom of each new updated message
-//     //   $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
-//   },
-//   // Handle errors
-//   (err) => {
-//     console.log("Errors handled: " + err.code);
-//   }
-// );
+    // Keep div scrolled to bottom of each new updated message
+    //   $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
+  },
+  // Handle errors
+  (err) => {
+    console.log("Errors handled: " + err.code);
+  }
+);
 
 // OPTIONS
 // Create an on click listener for when player 1 selects a RPS option, run a function
