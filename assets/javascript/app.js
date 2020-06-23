@@ -595,14 +595,14 @@ chatCollection.orderByChild("time").on(
 
     // Create a new HTML p tag element for the new message
     let newMsg = $("<p>", {
-      class: "player-" + snapshot.val().idNum,
+      class: "player-" + snapshot.val().userID,
     });
 
     // Create a new HTML span tag element to hold new message text
     let newMsgText = $("<span>", {
       class: "chat-message", 
-      id: "player-" + snapshot.val().idNum + "-msg",
-    }).text(snapshot.val().name + ": " + snapshot.val().message);
+      id: "player-" + snapshot.val().userID + "-msg",
+    }).text(snapshot.val().username + ": " + snapshot.val().message);
 
     // Construct the newMsg
     newMsg.append(newMsgText);
