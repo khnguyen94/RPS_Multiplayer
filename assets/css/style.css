@@ -1,9 +1,40 @@
+html {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+}
+
 header {
     display: flex;
     justify-content: center;
 }
 
-#game-wrapper {}
+.row {
+    width: 100%;
+}
+
+#game-wrapper {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+}
+
+#game-area {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+.jumbotron {
+    width: 95%;
+}
 
 #username-disp {
     display: flex;
@@ -16,8 +47,8 @@ h3 {
     height: 70px
 }
 
-.loading-dots > div {
-    width: 1rem; 
+.loading-dots>div {
+    width: 1rem;
     height: 1rem;
     background-color: grey;
     border-radius: 50%;
@@ -34,10 +65,14 @@ h3 {
 }
 
 @keyframes bounce {
-    0%, 80%, 100%{
+
+    0%,
+    80%,
+    100% {
         transform: scale(0);
     }
-    40%{
+
+    40% {
         transform: scale(1);
     }
 }
@@ -111,24 +146,36 @@ h3 {
     position: absolute;
     width: 90%;
     height: 30%;
+    border: 1px solid yellow;
 }
 
 #chat-messages-disp {
-    display: flex;
-    justify-content: center;
-    position: absolute;
-    background-color: #fffcf7;
+    overflow: scroll;
+    position: relative;
+    width: 600px;
+    height: 150px;
+    padding: 10px;
+    margin: 20px auto;
+    background-color: white;
+}
+
+.chat-message {
     height: 125px;
     overflow: auto;
+    background-color: #fffcf7;
+    border: 1px solid grey;
+    border-radius: 25px;
+    padding: 4px 10px;
 }
 
 #chat-bar {
     display: flex;
     justify-content: center;
     position: absolute;
-    position: absolute;
+    width: 100%;
+    bottom: 10px;
 }
 
 #chat-input {
-    width: 100%;
+    width: 550px;
 }

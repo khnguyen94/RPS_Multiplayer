@@ -37,8 +37,9 @@ let loginBtn = $("#login-btn");
 let usernameText = $("#username-text");
 
 // CHAT
-let sendChatBtn = $("#send-chat-btn");
+let chatDisp = $("#chat-messages-disp"); 
 let chatText = $("#chat-input");
+let sendChatBtn = $("#send-chat-btn");
 
 // BATTLEFIELD
 let interactionText = $("#interaction-text");
@@ -96,7 +97,7 @@ usernameText.keypress(function (event) {
 // Create a function to log user into the game
 let loginGameFunc = () => {
   // Create a reference for adding a disconnection
-  let chatDataDisc = database.ref("/chat/" + Date.now());
+  let chatDataDisc = database.ref("/chat-data/" + Date.now());
 
   // Check for players currently logged into the game
   // If currentPlayersCount is less than two, meaning that there are no or only one player logged in
@@ -582,8 +583,12 @@ chatText.keypress(function (event) {
 });
 
 // Create a function that listens to database's chatCollection for when a new child (message) is detected, order each child (message) by time
+// Order each message by time
+// Listen for when a new child is added
+
 chatCollection.orderByChild("time").on(
-  "child_added",
+  "child_added", 
+  // Run an anonomys function that returns snapshot of chat-data
   function (snapshot) {
     // Log everything that's coming out of snapshot
     console.log(snapshot.val());
@@ -595,16 +600,18 @@ chatCollection.orderByChild("time").on(
 
     // Create a new HTML span tag element to hold new message text
     let newMsgText = $("<span>", {
-      class: "player-" + snapshot.val().idNum + "-msg",
+      class: "chat-message", 
+      id: "player-" + snapshot.val().idNum + "-msg",
     }).text(snapshot.val().name + ": " + snapshot.val().message);
 
     // Construct the newMsg
     newMsg.append(newMsgText);
 
     // Append message to message list disp
+    chatDisp.append(newMsg);
 
     // Keep div scrolled to bottom of each new updated message
-    //   $("#chat-messages").scrollTop($("#chat-messages")[0].scrollHeight);
+    chatDisp.scrollTop(chatDisp[0].scrollHeight);
   },
   // Handle errors
   (err) => {
