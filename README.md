@@ -1,21 +1,33 @@
 # RPS_Multiplayer_2
 
-This is an application whose basic function is to return to the user GIFs of their favorite celebrities.
+A multiplayer take on the classic rock, paper, scissors game with an integrated chat room. Google Firebase is used as a backend to store and retrieve all interaction and chat data. Max of two players!
+
+
+## Getting Started
+Code: https://github.com/khnguyen94/RPS_Multiplayer
+
+Live: 
+
+Unfortunately, this project is not available in a live, deployed version. That is the next goal for this game. 
 
 ## Usage
 
-We have provided a few stock celebrities for users to get an idea of what they can get from our application
-At the top, we have a search bar where users can add to the list of celebrities they can find GIFs for
-When a user searches for a new celebrity, that new celebrity will be added as to keep a running record in addition to a set of GIFs being returned for that celebrity of interest
-Previously added celebrities can be reaccessed for their associated GIFs
-As to not overload the browser window, we have implemented an on-click functionality to our GIF photos. Initially, all GIFs are rendered as still images. When the user clicks on a still GIF image, it will switch over to the GIF clip (traditional moving GIFs as we know it)
-Importance This app provides some additional funcitonality in comparison to the GIPHY UI:
+The game of RPS has never been played alone. Always in pairs or more. This game takes the fun of the simple game and puts it on an online platform. Use it to practice on your split-moment decision making skills or even to learn about your opponent over time. 
 
-By maintaining a history of recently searched celebrities, users can see and revisit their GIFs searches
-Get Started
+## Importance 
 
-Simply go to: https://khnguyen94.github.io/GIF_Generator/
-Try clicking on one of the stock celebrities
-Add your own celebrity to the list
-Revisit previous celebrities and their GIFs
-Contributors: Khoa Nguyen (Github: khnguyen94)
+This is perfect example that a classic in person game that has been brought over into the live, online realm. You could have many different individuals playing against each other from all over the world as long as they have an internet connection. 
+
+## Technologies Used
+HTML 
+Bootstrap 
+CSS 
+Javascript 
+jQuery 
+Google Firebase
+
+## Authors
+Khoa Nguyen - https://github.com/khnguyen94
+
+## License
+This project is licensed under the MIT License - see the LICENSE.md file for details
