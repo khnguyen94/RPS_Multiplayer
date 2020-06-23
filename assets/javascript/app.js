@@ -37,7 +37,7 @@ let loginBtn = $("#login-btn");
 let usernameText = $("#username-text");
 
 // CHAT
-let chatDisp = $("#chat-messages-disp"); 
+let chatDisp = $("#chat-messages-disp");
 let chatText = $("#chat-input");
 let sendChatBtn = $("#send-chat-btn");
 
@@ -49,6 +49,7 @@ let interactionText = $("#interaction-text");
 let p1Disp = $("#p1-disp");
 let p1NameText = $("#p1-name-text");
 let p1OptionsDisp = $("#p1-options-disp");
+let p1Chosen = $("#p1-chosen");
 let p1WinsText = $("#p1-wins-counter-text");
 let p1TiesText = $("#p1-ties-counter-text");
 let p1LossesText = $("#p1-losses-counter-text");
@@ -57,6 +58,7 @@ let p1LossesText = $("#p1-losses-counter-text");
 let p2Disp = $("#p2-disp");
 let p2NameText = $("#p2-name-text");
 let p2OptionsDisp = $("#p2-options-disp");
+let p2Chosen = $("#p2-chosen");
 let p2WinsText = $("#p2-wins-counter-text");
 let p2TiesText = $("#p2-ties-counter-text");
 let p2LossesText = $("#p2-losses-counter-text");
@@ -126,6 +128,7 @@ let loginGameFunc = () => {
       ties: 0,
       losses: 0,
       choice: null,
+      choiceImgSrc: null,
     });
 
     // When they disconnect from the game, remove this user's player object from playerList
@@ -528,6 +531,26 @@ currentTurnRef.on("value", function (snapshot) {
     }
     // Else if currentTurn is 3
     else if (currentTurn === 3) {
+      // Run the gameLogicFunc with the player choice parameter inputs
+      gameLogicFunc(playerOneData.choice, playerTwoData.choice);
+
+      // Create HTML picture elements for p1 choice based on
+
+      // Reveal both player's choices
+      p1Chosen;
+
+      // Create a function that moves onto the next round
+      let nextRoundFunc = () => {
+        // Clear p1Chosen and p2Chosen divs
+        p1Chosen.empty();
+        p2Chosen.empty();
+
+        // Clear results
+
+        // Reset after a timeout
+      };
+
+      // Then on result, reset to turn 1
     }
   }
 });
@@ -587,7 +610,7 @@ chatText.keypress(function (event) {
 // Listen for when a new child is added
 
 chatCollection.orderByChild("time").on(
-  "child_added", 
+  "child_added",
   // Run an anonomys function that returns snapshot of chat-data
   function (snapshot) {
     // Log everything that's coming out of snapshot
@@ -600,7 +623,7 @@ chatCollection.orderByChild("time").on(
 
     // Create a new HTML span tag element to hold new message text
     let newMsgText = $("<span>", {
-      class: "chat-message", 
+      class: "chat-message",
       id: "player-" + snapshot.val().userID + "-msg",
     }).text(snapshot.val().username + ": " + snapshot.val().message);
 
@@ -628,13 +651,19 @@ $(document).on("click", "li", function () {
   // Get a handle on the option's data-option
   let clickOptionData = clickedOption
     .children("img.option-img")
-    .attr("dataoption");
+    .attr("dataOption");
 
   console.log("Clicked: ");
   console.log(clickOptionData);
 
   // Set the player's opton choice in the current player object in firebase
   playerList.child("choice").set(clickOptionData);
+
+  // Get a handle on the option img clicked
+  let clickedOptionImg = clickedOption.children("img.option-img").attr("src");
+
+  // Set the player's opton choice img in the current player object in firebase
+  playerList.child("choiceImgSrc").set(clickedOptionImg);
 
   // When player has chosen and their choice is updated in their person object in player-list collection
   // Clear the options display
