@@ -722,10 +722,10 @@ let gameLogicFunc = (p1Choice, p2Choice) => {
     // Clear interactionText
     interactionText.empty();
 
-    // Create a HTML element to hold the p2 win message
+    // Create a HTML element to hold the tie game message
     let tieGameMsg = $("<p>").text("Tie game!");
 
-    // Append p2 win message to interactionText
+    // Append tie game message to interactionText
     interactionText.append(tieGameMsg);
   };
 
